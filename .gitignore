@@ -19,4 +19,5 @@ artifacts/*.log
 artifacts/*.pid
 
 # Keep small example payloads
+!artifacts/best_fraud_model_f1.joblib
 !artifacts/sample_prediction_input.json
