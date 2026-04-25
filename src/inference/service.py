@@ -59,7 +59,7 @@ class FraudPredictionService:
         artifact_path = Path(os.getenv(ARTIFACT_PATH_ENV_VAR, str(DEFAULT_ARTIFACT_PATH)))
         return cls.from_path(artifact_path)
 
-    def _build_feature_frame(self, payload: dict[str, Any]) -> pd.DataFrame:
+    def _normalize_payload(self, payload: dict[str, Any]) -> dict[str, Any]:
         feature_spec = self.feature_spec
         feature_values: dict[str, Any] = {}
 
@@ -73,6 +73,11 @@ class FraudPredictionService:
                 raise ValueError(f"Missing categorical feature: {feature_name}")
             feature_values[feature_name] = payload[feature_name]
 
+        return feature_values
+
+    def _build_feature_frame(self, payload: dict[str, Any]) -> pd.DataFrame:
+        feature_spec = self.feature_spec
+        feature_values = self._normalize_payload(payload)
         ordered_columns = [*feature_spec.numeric_features, *feature_spec.categorical_features]
         return pd.DataFrame([[feature_values[column] for column in ordered_columns]], columns=ordered_columns)
 
@@ -88,6 +93,28 @@ class FraudPredictionService:
             threshold=float(self.artifact.threshold),
             model_name=self.artifact.model_name,
         )
+
+    def predict_batch(self, payloads: list[dict[str, Any]]) -> pd.DataFrame:
+        if not payloads:
+            raise ValueError("Batch payload must contain at least one transaction.")
+
+        ordered_columns = [
+            *self.feature_spec.numeric_features,
+            *self.feature_spec.categorical_features,
+        ]
+        normalized_rows = [self._normalize_payload(payload) for payload in payloads]
+        features = pd.DataFrame(normalized_rows, columns=ordered_columns)
+
+        scores = self.artifact.predict_scores(features).astype(float)
+        predictions = self.artifact.predict(features).astype(int)
+
+        results = features.copy()
+        results["fraud_probability"] = scores.values
+        results["prediction"] = predictions.values
+        results["predicted_label"] = results["prediction"].map({0: "not_fraud", 1: "fraud"})
+        results["threshold"] = float(self.artifact.threshold)
+        results["model_name"] = self.artifact.model_name
+        return results
 
     def metadata(self) -> dict[str, Any]:
         return {

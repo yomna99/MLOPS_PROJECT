@@ -35,3 +35,12 @@ class FraudApiClient:
         )
         response.raise_for_status()
         return response.json()
+
+    def predict_batch(self, payloads: list[dict[str, Any]]) -> dict[str, Any]:
+        response = requests.post(
+            f"{self.base_url}/predict-batch",
+            json={"transactions": payloads},
+            timeout=self.timeout_seconds,
+        )
+        response.raise_for_status()
+        return response.json()

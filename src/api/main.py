@@ -29,6 +29,22 @@ class FraudPredictionResponse(BaseModel):
     model_name: str
 
 
+class FraudBatchPredictionRequest(BaseModel):
+    transactions: list[FraudPredictionRequest] = Field(..., min_length=1)
+
+
+class FraudBatchSummary(BaseModel):
+    total_transactions: int
+    fraud_predictions: int
+    non_fraud_predictions: int
+    average_fraud_probability: float
+
+
+class FraudBatchPredictionResponse(BaseModel):
+    summary: FraudBatchSummary
+    predictions: list[FraudPredictionResponse]
+
+
 @lru_cache(maxsize=1)
 def get_prediction_service() -> FraudPredictionService:
     return FraudPredictionService.from_environment()
@@ -55,3 +71,29 @@ def predict(
 ) -> FraudPredictionResponse:
     result = service.predict(request.model_dump())
     return FraudPredictionResponse(**result.to_dict())
+
+
+@app.post("/predict-batch", response_model=FraudBatchPredictionResponse)
+def predict_batch(
+    request: FraudBatchPredictionRequest,
+    service: FraudPredictionService = Depends(get_prediction_service),
+) -> FraudBatchPredictionResponse:
+    results = service.predict_batch([transaction.model_dump() for transaction in request.transactions])
+    prediction_rows = [
+        FraudPredictionResponse(
+            prediction=int(row["prediction"]),
+            predicted_label=row["predicted_label"],
+            fraud_probability=float(row["fraud_probability"]),
+            threshold=float(row["threshold"]),
+            model_name=row["model_name"],
+        )
+        for row in results.to_dict(orient="records")
+    ]
+    fraud_predictions = int(results["prediction"].sum())
+    summary = FraudBatchSummary(
+        total_transactions=int(len(results)),
+        fraud_predictions=fraud_predictions,
+        non_fraud_predictions=int(len(results) - fraud_predictions),
+        average_fraud_probability=float(results["fraud_probability"].mean()),
+    )
+    return FraudBatchPredictionResponse(summary=summary, predictions=prediction_rows)

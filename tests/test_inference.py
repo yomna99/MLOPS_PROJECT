@@ -75,6 +75,35 @@ class FraudPredictionServiceTest(unittest.TestCase):
                 }
             )
 
+    def test_predict_batch_returns_dataframe_with_predictions(self) -> None:
+        result = self.service.predict_batch(
+            [
+                {
+                    "step": 1,
+                    "type": "PAYMENT",
+                    "amount": 100.0,
+                    "oldbalanceOrg": 1000.0,
+                    "newbalanceOrig": 900.0,
+                    "oldbalanceDest": 0.0,
+                    "newbalanceDest": 100.0,
+                    "isFlaggedFraud": 0,
+                },
+                {
+                    "step": 1,
+                    "type": "TRANSFER",
+                    "amount": 900.0,
+                    "oldbalanceOrg": 1000.0,
+                    "newbalanceOrig": 100.0,
+                    "oldbalanceDest": 0.0,
+                    "newbalanceDest": 900.0,
+                    "isFlaggedFraud": 0,
+                },
+            ]
+        )
+
+        self.assertEqual(result["prediction"].tolist(), [0, 1])
+        self.assertEqual(result["predicted_label"].tolist(), ["not_fraud", "fraud"])
+
 
 if __name__ == "__main__":
     unittest.main()

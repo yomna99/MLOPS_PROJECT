@@ -12,8 +12,8 @@ from src.inference.service import FraudPredictionService
 
 class DummyEstimator:
     def predict_proba(self, features):
-        score = 1.0 if float(features["amount"].iloc[0]) > 500.0 else 0.0
-        return np.array([[1.0 - score, score]], dtype=float)
+        scores = (features["amount"].astype(float).to_numpy() > 500.0).astype(float)
+        return np.column_stack([1.0 - scores, scores]).astype(float)
 
 
 class FraudApiTest(unittest.TestCase):
@@ -62,6 +62,41 @@ class FraudApiTest(unittest.TestCase):
         self.assertEqual(body["prediction"], 1)
         self.assertEqual(body["predicted_label"], "fraud")
         self.assertEqual(body["model_name"], "api_dummy_model")
+
+    def test_predict_batch_returns_summary(self) -> None:
+        response = self.client.post(
+            "/predict-batch",
+            json={
+                "transactions": [
+                    {
+                        "step": 1,
+                        "type": "PAYMENT",
+                        "amount": 100.0,
+                        "oldbalanceOrg": 1000.0,
+                        "newbalanceOrig": 900.0,
+                        "oldbalanceDest": 0.0,
+                        "newbalanceDest": 100.0,
+                        "isFlaggedFraud": 0,
+                    },
+                    {
+                        "step": 1,
+                        "type": "TRANSFER",
+                        "amount": 1000.0,
+                        "oldbalanceOrg": 1000.0,
+                        "newbalanceOrig": 0.0,
+                        "oldbalanceDest": 0.0,
+                        "newbalanceDest": 1000.0,
+                        "isFlaggedFraud": 0,
+                    },
+                ]
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["summary"]["total_transactions"], 2)
+        self.assertEqual(body["summary"]["fraud_predictions"], 1)
+        self.assertEqual(len(body["predictions"]), 2)
 
 
 if __name__ == "__main__":
