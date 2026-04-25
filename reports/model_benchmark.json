@@ -1,0 +1,395 @@
+{
+  "selected_model": "lightgbm",
+  "selection_metric": "average_precision",
+  "artifacts": {
+    "joblib_model_path": "artifacts\\best_fraud_model.joblib",
+    "pickle_model_path": "artifacts\\best_fraud_model.pkl",
+    "report_output_path": "reports\\model_benchmark.json",
+    "leaderboard_output_path": "reports\\model_leaderboard.csv"
+  },
+  "dataset": {
+    "csv_path": "data\\raw\\AIML Dataset.csv",
+    "raw_rows": 120000,
+    "train_rows": 96000,
+    "train_rows_after_downsampling": 1408,
+    "test_rows": 24000,
+    "fraud_rate_full_sample": 0.0013333333333333333
+  },
+  "benchmark_config": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "max_majority_to_minority_ratio": 10,
+    "cv_folds": 3,
+    "search_iterations": 4,
+    "candidate_models": [
+      "logistic_regression",
+      "random_forest",
+      "extra_trees",
+      "gradient_boosting",
+      "bagging_tree",
+      "adaboost",
+      "catboost",
+      "lightgbm",
+      "xgboost"
+    ],
+    "n_jobs": 1
+  },
+  "best_model": {
+    "model_name": "lightgbm",
+    "notes": "Leaf-wise gradient boosting for tabular classification.",
+    "best_params": {
+      "classifier__num_leaves": 63,
+      "classifier__n_estimators": 320,
+      "classifier__min_child_samples": 20,
+      "classifier__max_depth": 10,
+      "classifier__learning_rate": 0.05
+    },
+    "cv_scores": {
+      "selection_metric": "average_precision",
+      "best_selection_score": 0.9913056620099535,
+      "roc_auc": 0.9989783906739701,
+      "average_precision": 0.9913056620099535,
+      "fraud_f1": 0.9501822145500306,
+      "fraud_precision": 0.9425505050505051,
+      "fraud_recall": 0.960686600221484
+    },
+    "holdout_metrics": {
+      "roc_auc": 0.9969640510263684,
+      "average_precision": 0.7377396955284835,
+      "fraud_f1": 0.20454545454545456,
+      "fraud_precision": 0.11637931034482758,
+      "fraud_recall": 0.84375,
+      "confusion_matrix": [
+        [
+          23763,
+          205
+        ],
+        [
+          5,
+          27
+        ]
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "model_name": "lightgbm",
+      "notes": "Leaf-wise gradient boosting for tabular classification.",
+      "best_params": {
+        "classifier__num_leaves": 63,
+        "classifier__n_estimators": 320,
+        "classifier__min_child_samples": 20,
+        "classifier__max_depth": 10,
+        "classifier__learning_rate": 0.05
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9913056620099535,
+        "roc_auc": 0.9989783906739701,
+        "average_precision": 0.9913056620099535,
+        "fraud_f1": 0.9501822145500306,
+        "fraud_precision": 0.9425505050505051,
+        "fraud_recall": 0.960686600221484
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9969640510263684,
+        "average_precision": 0.7377396955284835,
+        "fraud_f1": 0.20454545454545456,
+        "fraud_precision": 0.11637931034482758,
+        "fraud_recall": 0.84375,
+        "confusion_matrix": [
+          [
+            23763,
+            205
+          ],
+          [
+            5,
+            27
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "adaboost",
+      "notes": "Classic boosting baseline over shallow trees.",
+      "best_params": {
+        "classifier__n_estimators": 180,
+        "classifier__learning_rate": 0.2,
+        "classifier__estimator__max_depth": 3
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9888890867323049,
+        "roc_auc": 0.9987009726057815,
+        "average_precision": 0.9888890867323049,
+        "fraud_f1": 0.9375236432416703,
+        "fraud_precision": 0.9418117343649257,
+        "fraud_recall": 0.9370616463639719
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9970924774699599,
+        "average_precision": 0.727896007400113,
+        "fraud_f1": 0.23673469387755103,
+        "fraud_precision": 0.13615023474178403,
+        "fraud_recall": 0.90625,
+        "confusion_matrix": [
+          [
+            23784,
+            184
+          ],
+          [
+            3,
+            29
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "xgboost",
+      "notes": "Optimized gradient boosting often strong on fraud tabular datasets.",
+      "best_params": {
+        "classifier__subsample": 1.0,
+        "classifier__n_estimators": 320,
+        "classifier__max_depth": 6,
+        "classifier__learning_rate": 0.1,
+        "classifier__colsample_bytree": 0.85
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9857559043474936,
+        "roc_auc": 0.99799385119119,
+        "average_precision": 0.9857559043474936,
+        "fraud_f1": 0.9290782059950417,
+        "fraud_precision": 0.9693362193362193,
+        "fraud_recall": 0.8975636766334442
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9974960103054072,
+        "average_precision": 0.7336589141887822,
+        "fraud_f1": 0.25925925925925924,
+        "fraud_precision": 0.15217391304347827,
+        "fraud_recall": 0.875,
+        "confusion_matrix": [
+          [
+            23812,
+            156
+          ],
+          [
+            4,
+            28
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "logistic_regression",
+      "notes": "Linear baseline with class balancing.",
+      "best_params": {
+        "classifier__C": 0.1
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9818916213869727,
+        "roc_auc": 0.9942588864097329,
+        "average_precision": 0.9818916213869727,
+        "fraud_f1": 0.9097570079844135,
+        "fraud_precision": 0.8688662644544998,
+        "fraud_recall": 0.960686600221484
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9711301266271695,
+        "average_precision": 0.5620419751031717,
+        "fraud_f1": 0.12916666666666668,
+        "fraud_precision": 0.06919642857142858,
+        "fraud_recall": 0.96875,
+        "confusion_matrix": [
+          [
+            23551,
+            417
+          ],
+          [
+            1,
+            31
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "catboost",
+      "notes": "Gradient boosting with ordered boosting and balanced class handling.",
+      "best_params": {
+        "classifier__learning_rate": 0.1,
+        "classifier__l2_leaf_reg": 3,
+        "classifier__iterations": 120,
+        "classifier__depth": 8
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9803960992671374,
+        "roc_auc": 0.9954528835960774,
+        "average_precision": 0.9803960992671374,
+        "fraud_f1": 0.9233304702987342,
+        "fraud_precision": 0.8764564007421151,
+        "fraud_recall": 0.9765596160944998
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9971615800233644,
+        "average_precision": 0.7648320523088439,
+        "fraud_f1": 0.14187643020594964,
+        "fraud_precision": 0.07654320987654321,
+        "fraud_recall": 0.96875,
+        "confusion_matrix": [
+          [
+            23594,
+            374
+          ],
+          [
+            1,
+            31
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "gradient_boosting",
+      "notes": "Gradient boosting baseline for tabular fraud data.",
+      "best_params": {
+        "classifier__subsample": 0.7,
+        "classifier__n_estimators": 180,
+        "classifier__max_depth": null,
+        "classifier__learning_rate": 0.05
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9768421593659266,
+        "roc_auc": 0.991322929254752,
+        "average_precision": 0.9768421593659266,
+        "fraud_f1": 0.9246959932754274,
+        "fraud_precision": 0.9767441860465116,
+        "fraud_recall": 0.8820598006644519
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9957104264018692,
+        "average_precision": 0.7529138861779202,
+        "fraud_f1": 0.2178988326848249,
+        "fraud_precision": 0.12444444444444444,
+        "fraud_recall": 0.875,
+        "confusion_matrix": [
+          [
+            23771,
+            197
+          ],
+          [
+            4,
+            28
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "random_forest",
+      "notes": "Bagging ensemble of decision trees.",
+      "best_params": {
+        "classifier__n_estimators": 180,
+        "classifier__min_samples_leaf": 2,
+        "classifier__max_depth": 12
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9757516395953557,
+        "roc_auc": 0.9959431930008726,
+        "average_precision": 0.9757516395953557,
+        "fraud_f1": 0.9047712636675117,
+        "fraud_precision": 0.9733742959549412,
+        "fraud_recall": 0.8504983388704318
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9952501773197597,
+        "average_precision": 0.7538113684881624,
+        "fraud_f1": 0.30337078651685395,
+        "fraud_precision": 0.18493150684931506,
+        "fraud_recall": 0.84375,
+        "confusion_matrix": [
+          [
+            23849,
+            119
+          ],
+          [
+            5,
+            27
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "bagging_tree",
+      "notes": "Explicit bagging with balanced decision trees.",
+      "best_params": {
+        "classifier__n_estimators": 60,
+        "classifier__estimator__min_samples_leaf": 2,
+        "classifier__estimator__max_depth": null
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9691315506892444,
+        "roc_auc": 0.996669966485428,
+        "average_precision": 0.9691315506892444,
+        "fraud_f1": 0.8784106386351774,
+        "fraud_precision": 0.9028943924292762,
+        "fraud_recall": 0.8586194167589517
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9959757541305073,
+        "average_precision": 0.5993974502805789,
+        "fraud_f1": 0.2032520325203252,
+        "fraud_precision": 0.11682242990654206,
+        "fraud_recall": 0.78125,
+        "confusion_matrix": [
+          [
+            23779,
+            189
+          ],
+          [
+            7,
+            25
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "extra_trees",
+      "notes": "Bagging-style ensemble with stronger randomization.",
+      "best_params": {
+        "classifier__n_estimators": 160,
+        "classifier__min_samples_leaf": 2,
+        "classifier__max_depth": null
+      },
+      "cv_scores": {
+        "selection_metric": "average_precision",
+        "best_selection_score": 0.9170628171461962,
+        "roc_auc": 0.9828217774108904,
+        "average_precision": 0.9170628171461962,
+        "fraud_f1": 0.7654421768707484,
+        "fraud_precision": 0.6717446699297879,
+        "fraud_recall": 0.8899963086009598
+      },
+      "holdout_metrics": {
+        "roc_auc": 0.9909097546728973,
+        "average_precision": 0.7622400747971072,
+        "fraud_f1": 0.06880189798339265,
+        "fraud_precision": 0.035758323057953144,
+        "fraud_recall": 0.90625,
+        "confusion_matrix": [
+          [
+            23186,
+            782
+          ],
+          [
+            3,
+            29
+          ]
+        ]
+      }
+    }
+  ]
+}

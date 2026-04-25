@@ -1,0 +1,22 @@
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local environments
+.venv/
+venv/
+
+# Raw data and local datasets
+data/raw/
+
+# Generated model artifacts
+artifacts/*.joblib
+artifacts/*.pkl
+
+# Local API/runtime files
+artifacts/*.log
+artifacts/*.pid
+
+# Keep small example payloads
+!artifacts/sample_prediction_input.json

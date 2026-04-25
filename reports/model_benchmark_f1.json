@@ -1,0 +1,851 @@
+{
+  "selected_model": "random_forest",
+  "selection_strategy": {
+    "hyperparameter_selection_metric_cv": "fraud_f1",
+    "threshold_selection_metric_validation": "fraud_f1",
+    "final_model_selection_stage": "validation"
+  },
+  "artifacts": {
+    "joblib_model_path": "artifacts\\best_fraud_model_f1.joblib",
+    "pickle_model_path": "artifacts\\best_fraud_model_f1.pkl",
+    "report_output_path": "reports\\model_benchmark_f1.json",
+    "leaderboard_output_path": "reports\\model_leaderboard_f1.csv"
+  },
+  "dataset": {
+    "csv_path": "data\\raw\\AIML Dataset.csv",
+    "raw_rows": 120000,
+    "train_rows": 72000,
+    "validation_rows": 24000,
+    "train_rows_after_downsampling": 1056,
+    "test_rows": 24000,
+    "fraud_rate_full_sample": 0.0013333333333333333
+  },
+  "benchmark_config": {
+    "validation_size": 0.2,
+    "test_size": 0.2,
+    "random_state": 42,
+    "max_majority_to_minority_ratio": 10,
+    "cv_folds": 3,
+    "search_iterations": 4,
+    "selection_metric": "fraud_f1",
+    "threshold_metric": "fraud_f1",
+    "candidate_models": [
+      "logistic_regression",
+      "random_forest",
+      "extra_trees",
+      "gradient_boosting",
+      "bagging_tree",
+      "adaboost",
+      "catboost",
+      "lightgbm",
+      "xgboost"
+    ],
+    "n_jobs": 1
+  },
+  "best_model": {
+    "model_name": "random_forest",
+    "notes": "Bagging ensemble of decision trees.",
+    "best_params": {
+      "classifier__n_estimators": 180,
+      "classifier__min_samples_leaf": 2,
+      "classifier__max_depth": 12
+    },
+    "cv_scores": {
+      "selection_metric": "fraud_f1",
+      "best_selection_score": 0.8783433994823122,
+      "roc_auc": 0.9917643229166666,
+      "average_precision": 0.9489290899619734,
+      "fraud_f1": 0.8783433994823122,
+      "fraud_precision": 0.9733333333333333,
+      "fraud_recall": 0.8020833333333334
+    },
+    "threshold_selection": {
+      "metric": "fraud_f1",
+      "selected_threshold": 0.72,
+      "selected_metric_value": 0.8214285714285714,
+      "default_threshold": 0.5,
+      "default_metric_value": 0.5306122448979592,
+      "candidate_threshold_count": 217
+    },
+    "validation_metrics": {
+      "threshold": 0.72,
+      "roc_auc": 0.9964770735981308,
+      "average_precision": 0.8020709967495306,
+      "fraud_f1": 0.8214285714285714,
+      "fraud_precision": 0.9583333333333334,
+      "fraud_recall": 0.71875,
+      "confusion_matrix": [
+        [
+          23967,
+          1
+        ],
+        [
+          9,
+          23
+        ]
+      ]
+    },
+    "validation_metrics_default_threshold": {
+      "threshold": 0.5,
+      "roc_auc": 0.9964770735981308,
+      "average_precision": 0.8020709967495306,
+      "fraud_f1": 0.5306122448979592,
+      "fraud_precision": 0.3939393939393939,
+      "fraud_recall": 0.8125,
+      "confusion_matrix": [
+        [
+          23928,
+          40
+        ],
+        [
+          6,
+          26
+        ]
+      ]
+    },
+    "holdout_metrics": {
+      "threshold": 0.72,
+      "roc_auc": 0.9955969939085445,
+      "average_precision": 0.7874679933064151,
+      "fraud_f1": 0.8070175438596491,
+      "fraud_precision": 0.92,
+      "fraud_recall": 0.71875,
+      "confusion_matrix": [
+        [
+          23966,
+          2
+        ],
+        [
+          9,
+          23
+        ]
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "model_name": "random_forest",
+      "notes": "Bagging ensemble of decision trees.",
+      "best_params": {
+        "classifier__n_estimators": 180,
+        "classifier__min_samples_leaf": 2,
+        "classifier__max_depth": 12
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.8783433994823122,
+        "roc_auc": 0.9917643229166666,
+        "average_precision": 0.9489290899619734,
+        "fraud_f1": 0.8783433994823122,
+        "fraud_precision": 0.9733333333333333,
+        "fraud_recall": 0.8020833333333334
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.72,
+        "selected_metric_value": 0.8214285714285714,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.5306122448979592,
+        "candidate_threshold_count": 217
+      },
+      "validation_metrics": {
+        "threshold": 0.72,
+        "roc_auc": 0.9964770735981308,
+        "average_precision": 0.8020709967495306,
+        "fraud_f1": 0.8214285714285714,
+        "fraud_precision": 0.9583333333333334,
+        "fraud_recall": 0.71875,
+        "confusion_matrix": [
+          [
+            23967,
+            1
+          ],
+          [
+            9,
+            23
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9964770735981308,
+        "average_precision": 0.8020709967495306,
+        "fraud_f1": 0.5306122448979592,
+        "fraud_precision": 0.3939393939393939,
+        "fraud_recall": 0.8125,
+        "confusion_matrix": [
+          [
+            23928,
+            40
+          ],
+          [
+            6,
+            26
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.72,
+        "roc_auc": 0.9955969939085445,
+        "average_precision": 0.7874679933064151,
+        "fraud_f1": 0.8070175438596491,
+        "fraud_precision": 0.92,
+        "fraud_recall": 0.71875,
+        "confusion_matrix": [
+          [
+            23966,
+            2
+          ],
+          [
+            9,
+            23
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "catboost",
+      "notes": "Gradient boosting with ordered boosting and balanced class handling.",
+      "best_params": {
+        "classifier__learning_rate": 0.1,
+        "classifier__l2_leaf_reg": 3,
+        "classifier__iterations": 120,
+        "classifier__depth": 8
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.8621588665907763,
+        "roc_auc": 0.9895507812500001,
+        "average_precision": 0.9454419758373787,
+        "fraud_f1": 0.8621588665907763,
+        "fraud_precision": 0.8186394498353585,
+        "fraud_recall": 0.9166666666666666
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.9600000000000001,
+        "selected_metric_value": 0.7741935483870968,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.16893732970027248,
+        "candidate_threshold_count": 300
+      },
+      "validation_metrics": {
+        "threshold": 0.9600000000000001,
+        "roc_auc": 0.9985644922396528,
+        "average_precision": 0.7965971930965796,
+        "fraud_f1": 0.7741935483870968,
+        "fraud_precision": 0.8,
+        "fraud_recall": 0.75,
+        "confusion_matrix": [
+          [
+            23962,
+            6
+          ],
+          [
+            8,
+            24
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9985644922396528,
+        "average_precision": 0.7965971930965796,
+        "fraud_f1": 0.16893732970027248,
+        "fraud_precision": 0.09253731343283582,
+        "fraud_recall": 0.96875,
+        "confusion_matrix": [
+          [
+            23664,
+            304
+          ],
+          [
+            1,
+            31
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.9600000000000001,
+        "roc_auc": 0.9946517231308412,
+        "average_precision": 0.7675482782234371,
+        "fraud_f1": 0.6984126984126984,
+        "fraud_precision": 0.7096774193548387,
+        "fraud_recall": 0.6875,
+        "confusion_matrix": [
+          [
+            23959,
+            9
+          ],
+          [
+            10,
+            22
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "xgboost",
+      "notes": "Optimized gradient boosting often strong on fraud tabular datasets.",
+      "best_params": {
+        "classifier__subsample": 0.85,
+        "classifier__n_estimators": 320,
+        "classifier__max_depth": 6,
+        "classifier__learning_rate": 0.1,
+        "classifier__colsample_bytree": 1.0
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.8620450405186939,
+        "roc_auc": 0.99423828125,
+        "average_precision": 0.9585689713568643,
+        "fraud_f1": 0.8620450405186939,
+        "fraud_precision": 0.9620132953466287,
+        "fraud_recall": 0.78125
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.97,
+        "selected_metric_value": 0.7719298245614035,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.43902439024390244,
+        "candidate_threshold_count": 297
+      },
+      "validation_metrics": {
+        "threshold": 0.97,
+        "roc_auc": 0.9977952373998664,
+        "average_precision": 0.7720603361898916,
+        "fraud_f1": 0.7719298245614035,
+        "fraud_precision": 0.88,
+        "fraud_recall": 0.6875,
+        "confusion_matrix": [
+          [
+            23965,
+            3
+          ],
+          [
+            10,
+            22
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9977952373998664,
+        "average_precision": 0.7720603361898916,
+        "fraud_f1": 0.43902439024390244,
+        "fraud_precision": 0.2967032967032967,
+        "fraud_recall": 0.84375,
+        "confusion_matrix": [
+          [
+            23904,
+            64
+          ],
+          [
+            5,
+            27
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.97,
+        "roc_auc": 0.9968343207610147,
+        "average_precision": 0.7503087699106772,
+        "fraud_f1": 0.7213114754098361,
+        "fraud_precision": 0.7586206896551724,
+        "fraud_recall": 0.6875,
+        "confusion_matrix": [
+          [
+            23961,
+            7
+          ],
+          [
+            10,
+            22
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "bagging_tree",
+      "notes": "Explicit bagging with balanced decision trees.",
+      "best_params": {
+        "classifier__n_estimators": 140,
+        "classifier__estimator__min_samples_leaf": 4,
+        "classifier__estimator__max_depth": null
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.8945683328330714,
+        "roc_auc": 0.9883138020833334,
+        "average_precision": 0.9470784821942827,
+        "fraud_f1": 0.8945683328330714,
+        "fraud_precision": 0.9417424869037773,
+        "fraud_recall": 0.8541666666666666
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.81,
+        "selected_metric_value": 0.7213114754098361,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.23107569721115537,
+        "candidate_threshold_count": 170
+      },
+      "validation_metrics": {
+        "threshold": 0.81,
+        "roc_auc": 0.9983369753421226,
+        "average_precision": 0.75482664866416,
+        "fraud_f1": 0.7213114754098361,
+        "fraud_precision": 0.7586206896551724,
+        "fraud_recall": 0.6875,
+        "confusion_matrix": [
+          [
+            23961,
+            7
+          ],
+          [
+            10,
+            22
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9983369753421226,
+        "average_precision": 0.75482664866416,
+        "fraud_f1": 0.23107569721115537,
+        "fraud_precision": 0.1324200913242009,
+        "fraud_recall": 0.90625,
+        "confusion_matrix": [
+          [
+            23778,
+            190
+          ],
+          [
+            3,
+            29
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.81,
+        "roc_auc": 0.9978434788050734,
+        "average_precision": 0.7413747258727873,
+        "fraud_f1": 0.7213114754098361,
+        "fraud_precision": 0.7586206896551724,
+        "fraud_recall": 0.6875,
+        "confusion_matrix": [
+          [
+            23961,
+            7
+          ],
+          [
+            10,
+            22
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "extra_trees",
+      "notes": "Bagging-style ensemble with stronger randomization.",
+      "best_params": {
+        "classifier__n_estimators": 160,
+        "classifier__min_samples_leaf": 2,
+        "classifier__max_depth": null
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.7289959839357429,
+        "roc_auc": 0.9782552083333332,
+        "average_precision": 0.8968477037734007,
+        "fraud_f1": 0.7289959839357429,
+        "fraud_precision": 0.6743751764271599,
+        "fraud_recall": 0.8229166666666666
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.87,
+        "selected_metric_value": 0.72,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.09046849757673667,
+        "candidate_threshold_count": 236
+      },
+      "validation_metrics": {
+        "threshold": 0.87,
+        "roc_auc": 0.9887975634178905,
+        "average_precision": 0.6557017610566795,
+        "fraud_f1": 0.72,
+        "fraud_precision": 1.0,
+        "fraud_recall": 0.5625,
+        "confusion_matrix": [
+          [
+            23968,
+            0
+          ],
+          [
+            14,
+            18
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9887975634178905,
+        "average_precision": 0.6557017610566795,
+        "fraud_f1": 0.09046849757673667,
+        "fraud_precision": 0.04770017035775128,
+        "fraud_recall": 0.875,
+        "confusion_matrix": [
+          [
+            23409,
+            559
+          ],
+          [
+            4,
+            28
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.87,
+        "roc_auc": 0.9903282501668892,
+        "average_precision": 0.6606195423792771,
+        "fraud_f1": 0.68,
+        "fraud_precision": 0.9444444444444444,
+        "fraud_recall": 0.53125,
+        "confusion_matrix": [
+          [
+            23967,
+            1
+          ],
+          [
+            15,
+            17
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "gradient_boosting",
+      "notes": "Gradient boosting baseline for tabular fraud data.",
+      "best_params": {
+        "classifier__subsample": 0.7,
+        "classifier__n_estimators": 180,
+        "classifier__max_depth": null,
+        "classifier__learning_rate": 0.05
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.877091923356779,
+        "roc_auc": 0.9849283854166666,
+        "average_precision": 0.9328171642929362,
+        "fraud_f1": 0.877091923356779,
+        "fraud_precision": 0.9727777777777779,
+        "fraud_recall": 0.8020833333333334
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.99,
+        "selected_metric_value": 0.7164179104477612,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.33986928104575165,
+        "candidate_threshold_count": 300
+      },
+      "validation_metrics": {
+        "threshold": 0.99,
+        "roc_auc": 0.9941653976134848,
+        "average_precision": 0.7543881251267792,
+        "fraud_f1": 0.7164179104477612,
+        "fraud_precision": 0.6857142857142857,
+        "fraud_recall": 0.75,
+        "confusion_matrix": [
+          [
+            23957,
+            11
+          ],
+          [
+            8,
+            24
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9941653976134848,
+        "average_precision": 0.7543881251267792,
+        "fraud_f1": 0.33986928104575165,
+        "fraud_precision": 0.21487603305785125,
+        "fraud_recall": 0.8125,
+        "confusion_matrix": [
+          [
+            23873,
+            95
+          ],
+          [
+            6,
+            26
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.99,
+        "roc_auc": 0.9912304948264352,
+        "average_precision": 0.7448229821313369,
+        "fraud_f1": 0.696969696969697,
+        "fraud_precision": 0.6764705882352942,
+        "fraud_recall": 0.71875,
+        "confusion_matrix": [
+          [
+            23957,
+            11
+          ],
+          [
+            9,
+            23
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "adaboost",
+      "notes": "Classic boosting baseline over shallow trees.",
+      "best_params": {
+        "classifier__n_estimators": 180,
+        "classifier__learning_rate": 0.2,
+        "classifier__estimator__max_depth": 3
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.907103825136612,
+        "roc_auc": 0.9965820312500001,
+        "average_precision": 0.973521803795803,
+        "fraud_f1": 0.907103825136612,
+        "fraud_precision": 0.9540229885057472,
+        "fraud_recall": 0.8645833333333334
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.68,
+        "selected_metric_value": 0.6923076923076923,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.391304347826087,
+        "candidate_threshold_count": 259
+      },
+      "validation_metrics": {
+        "threshold": 0.68,
+        "roc_auc": 0.9987346409796396,
+        "average_precision": 0.751114849922775,
+        "fraud_f1": 0.6923076923076923,
+        "fraud_precision": 0.9,
+        "fraud_recall": 0.5625,
+        "confusion_matrix": [
+          [
+            23966,
+            2
+          ],
+          [
+            14,
+            18
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9987346409796396,
+        "average_precision": 0.751114849922775,
+        "fraud_f1": 0.391304347826087,
+        "fraud_precision": 0.25471698113207547,
+        "fraud_recall": 0.84375,
+        "confusion_matrix": [
+          [
+            23889,
+            79
+          ],
+          [
+            5,
+            27
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.68,
+        "roc_auc": 0.9970520589953271,
+        "average_precision": 0.7179498346661398,
+        "fraud_f1": 0.6909090909090909,
+        "fraud_precision": 0.8260869565217391,
+        "fraud_recall": 0.59375,
+        "confusion_matrix": [
+          [
+            23964,
+            4
+          ],
+          [
+            13,
+            19
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "logistic_regression",
+      "notes": "Linear baseline with class balancing.",
+      "best_params": {
+        "classifier__C": 5.0
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.9503597851423938,
+        "roc_auc": 0.99365234375,
+        "average_precision": 0.9863189965989018,
+        "fraud_f1": 0.9503597851423938,
+        "fraud_precision": 0.9151450916156799,
+        "fraud_recall": 0.9895833333333334
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 1.0,
+        "selected_metric_value": 0.6666666666666666,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.13852813852813853,
+        "candidate_threshold_count": 245
+      },
+      "validation_metrics": {
+        "threshold": 1.0,
+        "roc_auc": 0.9993050630006676,
+        "average_precision": 0.7103532839964819,
+        "fraud_f1": 0.6666666666666666,
+        "fraud_precision": 0.8947368421052632,
+        "fraud_recall": 0.53125,
+        "confusion_matrix": [
+          [
+            23966,
+            2
+          ],
+          [
+            15,
+            17
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9993050630006676,
+        "average_precision": 0.7103532839964819,
+        "fraud_f1": 0.13852813852813853,
+        "fraud_precision": 0.07441860465116279,
+        "fraud_recall": 1.0,
+        "confusion_matrix": [
+          [
+            23570,
+            398
+          ],
+          [
+            0,
+            32
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 1.0,
+        "roc_auc": 0.9712279132593458,
+        "average_precision": 0.6705357366386462,
+        "fraud_f1": 0.7272727272727273,
+        "fraud_precision": 0.8695652173913043,
+        "fraud_recall": 0.625,
+        "confusion_matrix": [
+          [
+            23965,
+            3
+          ],
+          [
+            12,
+            20
+          ]
+        ]
+      }
+    },
+    {
+      "model_name": "lightgbm",
+      "notes": "Leaf-wise gradient boosting for tabular classification.",
+      "best_params": {
+        "classifier__num_leaves": 15,
+        "classifier__n_estimators": 320,
+        "classifier__min_child_samples": 40,
+        "classifier__max_depth": -1,
+        "classifier__learning_rate": 0.03
+      },
+      "cv_scores": {
+        "selection_metric": "fraud_f1",
+        "best_selection_score": 0.9139479790094543,
+        "roc_auc": 0.9959309895833334,
+        "average_precision": 0.9699341088398472,
+        "fraud_f1": 0.9139479790094543,
+        "fraud_precision": 0.9335951983685576,
+        "fraud_recall": 0.8958333333333334
+      },
+      "threshold_selection": {
+        "metric": "fraud_f1",
+        "selected_threshold": 0.98,
+        "selected_metric_value": 0.48148148148148145,
+        "default_threshold": 0.5,
+        "default_metric_value": 0.26244343891402716,
+        "candidate_threshold_count": 293
+      },
+      "validation_metrics": {
+        "threshold": 0.98,
+        "roc_auc": 0.9981720418891855,
+        "average_precision": 0.6783402029705307,
+        "fraud_f1": 0.48148148148148145,
+        "fraud_precision": 0.34210526315789475,
+        "fraud_recall": 0.8125,
+        "confusion_matrix": [
+          [
+            23918,
+            50
+          ],
+          [
+            6,
+            26
+          ]
+        ]
+      },
+      "validation_metrics_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.9981720418891855,
+        "average_precision": 0.6783402029705307,
+        "fraud_f1": 0.26244343891402716,
+        "fraud_precision": 0.15343915343915343,
+        "fraud_recall": 0.90625,
+        "confusion_matrix": [
+          [
+            23808,
+            160
+          ],
+          [
+            3,
+            29
+          ]
+        ]
+      },
+      "holdout_metrics": {
+        "threshold": 0.98,
+        "roc_auc": 0.9973447669809746,
+        "average_precision": 0.6785367615998652,
+        "fraud_f1": 0.4752475247524752,
+        "fraud_precision": 0.34782608695652173,
+        "fraud_recall": 0.75,
+        "confusion_matrix": [
+          [
+            23923,
+            45
+          ],
+          [
+            8,
+            24
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "roc_auc": 0.9724113759262968,
+  "confusion_matrix": [
+    [
+      9974,
+      12
+    ],
+    [
+      2,
+      12
+    ]
+  ],
+  "classification_report": {
+    "0": {
+      "precision": 0.9997995188452286,
+      "recall": 0.9987983176447026,
+      "f1-score": 0.9992986674681895,
+      "support": 9986.0
+    },
+    "1": {
+      "precision": 0.5,
+      "recall": 0.8571428571428571,
+      "f1-score": 0.631578947368421,
+      "support": 14.0
+    },
+    "accuracy": 0.9986,
+    "macro avg": {
+      "precision": 0.7498997594226142,
+      "recall": 0.9279705873937798,
+      "f1-score": 0.8154388074183052,
+      "support": 10000.0
+    },
+    "weighted avg": {
+      "precision": 0.9990997995188452,
+      "recall": 0.9986,
+      "f1-score": 0.9987838598600499,
+      "support": 10000.0
+    }
+  },
+  "dataset": {
+    "raw_rows": 50000,
+    "train_rows": 40000,
+    "train_rows_after_downsampling": 616,
+    "test_rows": 10000,
+    "fraud_rate_full_sample": 0.0014
+  },
+  "config": {
+    "dataset": {
+      "csv_path": "data\\raw\\AIML Dataset.csv",
+      "sample_size": 50000,
+      "random_state": 42
+    },
+    "test_size": 0.2,
+    "random_state": 42,
+    "max_majority_to_minority_ratio": 10,
+    "n_estimators": 160,
+    "max_depth": 12,
+    "n_jobs": 1
+  }
+}

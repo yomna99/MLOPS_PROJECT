@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git/
+.github/
+.pytest_cache/
+.venv/
+venv/
+notebooks/
+tests/
+reports/
+models/
+monitoring/
+docs/
+evaluation/
+prompts/
+data/
+artifacts/api_*.log
+artifacts/api_server.pid
+artifacts/sample_prediction_input.json
+Projet Mise en production et déploiement continu.pdf
