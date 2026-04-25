@@ -22,17 +22,18 @@ git push -u origin main
 Two workflows will run:
 
 - `.github/workflows/ci.yml`
-  Runs Python tests, builds the Docker image, and smoke-tests the API.
+  Runs Python tests, starts the API and Streamlit app with Docker Compose, and smoke-tests both services.
 
 - `.github/workflows/cd-ghcr.yml`
-  Publishes the Docker image to GitHub Container Registry on pushes to `main` or `master`.
+  Publishes both Docker images to GitHub Container Registry on pushes to `main` or `master`.
 
 ## 4. Published Docker Image
 
-The image will be published to:
+The images will be published to:
 
 ```text
 ghcr.io/yomna99/fraud-api
+ghcr.io/yomna99/fraud-web
 ```
 
 Possible tags include:
@@ -47,6 +48,9 @@ Possible tags include:
 ```powershell
 docker pull ghcr.io/yomna99/fraud-api:latest
 docker run --rm -p 8000:8000 ghcr.io/yomna99/fraud-api:latest
+
+docker pull ghcr.io/yomna99/fraud-web:latest
+docker run --rm -p 8501:8501 -e FRAUD_API_URL=http://host.docker.internal:8000 ghcr.io/yomna99/fraud-web:latest
 ```
 
 ## 6. Test The Running Image

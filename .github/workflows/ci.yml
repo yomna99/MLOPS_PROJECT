@@ -36,11 +36,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -f deployment/docker/Dockerfile -t fraud-api:ci .
-
-      - name: Run container
-        run: docker run -d --name fraud-api-ci -p 8000:8000 fraud-api:ci
+      - name: Start services with Docker Compose
+        run: docker compose -f deployment/docker/compose.yaml up --build -d
 
       - name: Wait for API to be ready
         run: |
@@ -51,12 +48,25 @@ jobs:
             sleep 3
           done
           echo "API did not become ready in time"
-          docker logs fraud-api-ci
+          docker compose -f deployment/docker/compose.yaml logs
+          exit 1
+
+      - name: Wait for web app to be ready
+        run: |
+          for i in {1..20}; do
+            if curl --fail http://127.0.0.1:8501/ > /dev/null; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Web app did not become ready in time"
+          docker compose -f deployment/docker/compose.yaml logs
           exit 1
 
       - name: Smoke test prediction endpoint
         run: |
           curl --fail http://127.0.0.1:8000/health
+          curl --fail http://127.0.0.1:8501/ > /dev/null
           curl --fail \
             -H "Content-Type: application/json" \
             -d @artifacts/sample_prediction_input.json \
@@ -64,8 +74,8 @@ jobs:
 
       - name: Show container logs on failure
         if: failure()
-        run: docker logs fraud-api-ci
+        run: docker compose -f deployment/docker/compose.yaml logs
 
-      - name: Stop container
+      - name: Stop services
         if: always()
-        run: docker rm -f fraud-api-ci
+        run: docker compose -f deployment/docker/compose.yaml down

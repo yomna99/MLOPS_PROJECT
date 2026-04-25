@@ -19,6 +19,13 @@ env:
 jobs:
   publish-ghcr:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image_name: fraud-api
+            dockerfile: deployment/docker/Dockerfile
+          - image_name: fraud-web
+            dockerfile: deployment/docker/Dockerfile.web
 
     steps:
       - name: Checkout repository
@@ -35,7 +42,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/fraud-api
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -46,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: deployment/docker/Dockerfile
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
