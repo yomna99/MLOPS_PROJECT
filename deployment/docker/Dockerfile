@@ -13,7 +13,6 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY src /app/src
 COPY artifacts/best_fraud_model_f1.joblib /app/artifacts/best_fraud_model_f1.joblib
-COPY artifacts/best_fraud_model_f1.pkl /app/artifacts/best_fraud_model_f1.pkl
 
 EXPOSE 8000
 
