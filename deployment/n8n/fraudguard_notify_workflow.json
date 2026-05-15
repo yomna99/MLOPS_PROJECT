@@ -1,0 +1,188 @@
+{
+  "name": "FraudGuard AI - Notify User Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fraudguard-notify",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -900,
+        220
+      ],
+      "webhookId": "fraudguard-notify"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\nconst factors = Array.isArray(body.explanatory_factors) ? body.explanatory_factors : [];\nconst model = 'openai/gpt-oss-20b';\nconst prompt = [\n  'Contexte de la transaction :',\n  `- prediction_id: ${body.prediction_id}`,\n  `- email: ${body.customer_email}`,\n  `- montant: ${body.amount} EUR`,\n  `- prediction: ${body.predicted_label}`,\n  `- fraud_probability: ${body.fraud_probability}`,\n  `- facteurs: ${JSON.stringify(factors)}`,\n  '',\n  'Redige le sujet d email et un message client professionnel en francais.',\n  'N inclus jamais d URL brute, de lien complet ou de jeton technique dans le texte.',\n  'Le message doit rester court, rassurant, prudent et comprehensible par un client bancaire.',\n  'Retourne strictement un JSON avec: email_subject, customer_message, recommended_action.'\n].join('\\n');\nreturn [{\n  json: {\n    prediction_id: body.prediction_id,\n    brand_name: body.brand_name,\n    brand_logo_data_uri: body.brand_logo_data_uri,\n    customer_email: body.customer_email,\n    amount: body.amount,\n    prediction: body.prediction,\n    predicted_label: body.predicted_label,\n    fraud_probability: body.fraud_probability,\n    explanatory_factors: factors,\n    confirm_url: body.confirm_url,\n    reject_url: body.reject_url,\n    email_subject: body.email_subject,\n    customer_message_preview: body.customer_message_preview,\n    recommended_action: body.recommended_action,\n    analysis_timestamp: body.analysis_timestamp,\n    analysis_context: body.analysis_context,\n    groq_request: {\n      model,\n      temperature: 0.2,\n      messages: [\n        {\n          role: 'system',\n          content: 'Tu es l agent IA de FraudGuard AI. Tu n inventes pas de nouvelle decision de fraude. Tu expliques seulement la decision du modele ML et tu rediges un email prudent, clair et court.'\n        },\n        {\n          role: 'user',\n          content: prompt\n        }\n      ],\n      response_format: {\n        type: 'json_object'\n      }\n    }\n  }\n}];"
+      },
+      "id": "prepare-context-node",
+      "name": "Prepare Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -660,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.GROQ_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.groq_request }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "groq-http-node",
+      "name": "Call Groq API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -390,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $items('Prepare Context', 0, 0)[0].json;\nconst raw = $json.choices?.[0]?.message?.content ?? '{}';\nconst sanitizeMessage = (value) => String(value ?? '').replace(/https?:\\/\\/\\S+/g, '').replace(/\\n{3,}/g, '\\n\\n').trim();\nlet parsed;\ntry {\n  parsed = JSON.parse(raw);\n} catch (error) {\n  parsed = {\n    email_subject: source.email_subject,\n    customer_message: source.customer_message_preview,\n    recommended_action: source.recommended_action,\n  };\n}\nparsed = {\n  email_subject: parsed.email_subject || source.email_subject,\n  customer_message: sanitizeMessage(parsed.customer_message || source.customer_message_preview),\n  recommended_action: parsed.recommended_action || source.recommended_action,\n};\nreturn [{ json: { ...source, llm_output: parsed } }];"
+      },
+      "id": "parse-node",
+      "name": "Parse Groq Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -130,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ 'MyBank <' + $env.SMTP_FROM_EMAIL + '>' }}",
+        "toEmail": "={{ $json.customer_email }}",
+        "subject": "={{ $json.llm_output.email_subject || $json.email_subject }}",
+        "html": "={{ (() => { const message = String($json.llm_output.customer_message || $json.customer_message_preview || '').replace(/https?:\\/\\/\\S+/g, '').trim(); const logo = String($json.brand_logo_data_uri || ''); const paragraphs = message.split(/\\n+/).filter(Boolean).map((line) => '<p style=\"margin:0 0 14px 0;color:#334155;font-size:15px;line-height:1.7;\">' + line + '</p>').join(''); const reasons = ($json.explanatory_factors || []).slice(0, 4).map((reason) => '<li style=\"margin:0 0 8px 0;\">' + reason + '</li>').join(''); const logoBlock = logo ? '<img src=\"' + logo + '\" alt=\"MyBank\" style=\"display:block;width:88px;height:auto;margin-bottom:14px;\">' : ''; return '<div style=\"background:#f3f7ff;padding:28px 0;font-family:Arial,sans-serif;\"><div style=\"max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #dbe4f0;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,0.08);\"><div style=\"background:linear-gradient(135deg,#102647,#1d4ed8);padding:24px 28px;color:#ffffff;\">' + logoBlock + '<div style=\"font-size:13px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.78;\">MyBank</div><div style=\"font-size:26px;font-weight:700;margin-top:8px;\">Verification de transaction</div><div style=\"font-size:14px;opacity:0.88;margin-top:6px;\">Une validation est requise pour proteger votre compte.</div></div><div style=\"padding:28px;\"><div style=\"background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;padding:18px 20px;margin-bottom:24px;\"><div style=\"font-size:13px;color:#9a3412;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;\">Alerte de securite</div><div style=\"font-size:18px;color:#7c2d12;font-weight:700;margin-top:8px;\">Transaction de ' + Number($json.amount || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' EUR</div><div style=\"font-size:14px;color:#9a3412;margin-top:6px;\">Probabilite de fraude : ' + Math.round(Number($json.fraud_probability || 0) * 100) + '%</div></div><div style=\"margin-bottom:18px;\">' + paragraphs + '</div>' + (reasons ? '<div style=\"background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:18px 20px;margin-bottom:24px;\"><div style=\"font-size:14px;font-weight:700;color:#102647;margin-bottom:10px;\">Pourquoi cette transaction a ete signalee</div><ul style=\"padding-left:18px;margin:0;color:#475569;font-size:14px;line-height:1.65;\">' + reasons + '</ul></div>' : '') + '<table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin:28px 0 12px 0;\"><tr><td style=\"padding:0 12px 12px 0;\"><a href=\"' + $json.confirm_url + '\" style=\"display:inline-block;background:linear-gradient(135deg,#0f9f4b,#16a34a);color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 10px 20px rgba(22,163,74,0.20);\">Confirmer une transaction legitime</a></td><td style=\"padding:0 0 12px 0;\"><a href=\"' + $json.reject_url + '\" style=\"display:inline-block;background:linear-gradient(135deg,#ef4444,#dc2626);color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 10px 20px rgba(220,38,38,0.18);\">Signaler une fraude confirmee</a></td></tr></table><div style=\"font-size:12px;color:#64748b;margin-top:18px;line-height:1.6;\">Les boutons ci-dessus sont securises et valides uniquement pour cette transaction.</div></div></div></div>'; })() }}",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "id": "send-email-node",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        120,
+        220
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "replace-with-your-smtp-credential-id",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { status: 'accepted', workflow_status: 'email_sent', email_subject: ($json.llm_output.email_subject || $json.email_subject), provider: 'n8n' } }}",
+        "options": {}
+      },
+      "id": "respond-node",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        370,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prepare Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Context": {
+      "main": [
+        [
+          {
+            "node": "Call Groq API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Groq API": {
+      "main": [
+        [
+          {
+            "node": "Parse Groq Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Groq Output": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fraudguard-notify-v2",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

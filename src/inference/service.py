@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import os
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 import joblib
 import pandas as pd
@@ -20,6 +21,7 @@ ARTIFACT_PATH_ENV_VAR = "FRAUD_MODEL_ARTIFACT_PATH"
 class FraudPredictionResult:
     """Prediction result returned by the inference service."""
 
+    prediction_id: str
     prediction: int
     predicted_label: str
     fraud_probability: float
@@ -28,6 +30,7 @@ class FraudPredictionResult:
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "prediction_id": self.prediction_id,
             "prediction": self.prediction,
             "predicted_label": self.predicted_label,
             "fraud_probability": self.fraud_probability,
@@ -87,6 +90,7 @@ class FraudPredictionService:
         prediction = int(self.artifact.predict(features).iloc[0])
         predicted_label = "fraud" if prediction == 1 else "not_fraud"
         return FraudPredictionResult(
+            prediction_id=str(uuid4()),
             prediction=prediction,
             predicted_label=predicted_label,
             fraud_probability=score,
@@ -109,6 +113,7 @@ class FraudPredictionService:
         predictions = self.artifact.predict(features).astype(int)
 
         results = features.copy()
+        results["prediction_id"] = [str(uuid4()) for _ in range(len(results))]
         results["fraud_probability"] = scores.values
         results["prediction"] = predictions.values
         results["predicted_label"] = results["prediction"].map({0: "not_fraud", 1: "fraud"})

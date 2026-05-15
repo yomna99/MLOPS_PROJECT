@@ -6,9 +6,15 @@ __pycache__/
 # Local environments
 .venv/
 venv/
+.env
 
 # Raw data and local datasets
 data/raw/
+data/production/*.csv
+data/production/api-feedback-*/
+data/production/prod-store-*/
+reports/evidently/*.html
+reports/evidently/*.json
 
 # Generated model artifacts
 artifacts/*.joblib
@@ -17,6 +23,8 @@ artifacts/*.pkl
 # Local API/runtime files
 artifacts/*.log
 artifacts/*.pid
+api-feedback-*/
+prod-store-*/
 
 # Keep small example payloads
 !artifacts/best_fraud_model_f1.joblib

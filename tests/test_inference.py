@@ -42,6 +42,7 @@ class FraudPredictionServiceTest(unittest.TestCase):
         self.assertEqual(result.prediction, 0)
         self.assertEqual(result.predicted_label, "not_fraud")
         self.assertEqual(result.threshold, 0.7)
+        self.assertTrue(result.prediction_id)
 
     def test_predict_returns_fraud_for_high_amount(self) -> None:
         result = self.service.predict(
@@ -103,6 +104,7 @@ class FraudPredictionServiceTest(unittest.TestCase):
 
         self.assertEqual(result["prediction"].tolist(), [0, 1])
         self.assertEqual(result["predicted_label"].tolist(), ["not_fraud", "fraud"])
+        self.assertEqual(len(result["prediction_id"]), 2)
 
 
 if __name__ == "__main__":

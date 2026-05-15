@@ -8,6 +8,17 @@ services:
       - "8000:8000"
     environment:
       FRAUD_MODEL_ARTIFACT_PATH: /app/artifacts/best_fraud_model_f1.joblib
+      FRAUD_PUBLIC_BASE_URL: ${FRAUD_PUBLIC_BASE_URL:-http://127.0.0.1:8000}
+      N8N_NOTIFY_WEBHOOK_URL: ${N8N_NOTIFY_WEBHOOK_URL:-http://n8n:5678/webhook/fraudguard-notify}
+      N8N_WEBHOOK_AUTH_HEADER_NAME: ${N8N_WEBHOOK_AUTH_HEADER_NAME:-}
+      N8N_WEBHOOK_AUTH_HEADER_VALUE: ${N8N_WEBHOOK_AUTH_HEADER_VALUE:-}
+      N8N_WEBHOOK_TIMEOUT_SECONDS: ${N8N_WEBHOOK_TIMEOUT_SECONDS:-20}
+    volumes:
+      - ../../data/raw:/app/data/raw:ro
+      - ../../data/production:/app/data/production
+      - ../../reports:/app/reports
+    depends_on:
+      - n8n
   fraud-web:
     build:
       context: ../..
@@ -19,3 +30,30 @@ services:
       - "8501:8501"
     environment:
       FRAUD_API_URL: http://fraud-api:8000
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: fraud-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      N8N_HOST: ${N8N_HOST:-localhost}
+      N8N_PORT: 5678
+      N8N_PROTOCOL: ${N8N_PROTOCOL:-http}
+      WEBHOOK_URL: ${WEBHOOK_URL:-http://localhost:5678/}
+      N8N_SECURE_COOKIE: "false"
+      GENERIC_TIMEZONE: ${GENERIC_TIMEZONE:-Europe/Paris}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      FRAUD_GROQ_MODEL: ${FRAUD_GROQ_MODEL:-openai/gpt-oss-20b}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+      FRAUD_PUBLIC_BASE_URL: ${FRAUD_PUBLIC_BASE_URL:-http://127.0.0.1:8000}
+    volumes:
+      - ../../deployment/n8n:/files
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:

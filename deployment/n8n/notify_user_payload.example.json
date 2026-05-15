@@ -1,0 +1,41 @@
+{
+  "prediction_id": "pred-20260426-001",
+  "customer_email": "client@bankmail.com",
+  "amount": 980.0,
+  "prediction": 1,
+  "predicted_label": "fraud",
+  "fraud_probability": 0.91,
+  "explanatory_factors": [
+    "Probabilité de fraude estimée à 91 %.",
+    "Type de transaction souvent surveillé en fraude bancaire.",
+    "Débit important du compte d’origine après l’opération.",
+    "Compte destinataire peu informatif ou sans solde observé."
+  ],
+  "confirm_url": "http://127.0.0.1:8000/feedback-action?token=abc123&action=confirmed_legit",
+  "reject_url": "http://127.0.0.1:8000/feedback-action?token=abc123&action=reported_fraud",
+  "email_subject": "Vérification d’une transaction bancaire",
+  "customer_message_preview": "Bonjour, nous avons détecté une activité inhabituelle concernant une transaction de 980.00 EUR. Merci de confirmer s’il s’agit bien d’une opération autorisée.",
+  "recommended_action": "request_customer_confirmation",
+  "analysis_timestamp": "2026-04-26T19:58:00+00:00",
+  "analysis_context": {
+    "transaction": {
+      "step": 45214,
+      "type": "TRANSFER",
+      "amount": 980.0,
+      "oldbalanceOrg": 980.0,
+      "newbalanceOrig": 0.0,
+      "oldbalanceDest": 0.0,
+      "newbalanceDest": 0.0,
+      "isFlaggedFraud": 0,
+      "customer_email": "client@bankmail.com"
+    },
+    "prediction": {
+      "prediction_id": "pred-20260426-001",
+      "prediction": 1,
+      "predicted_label": "fraud",
+      "fraud_probability": 0.91,
+      "threshold": 0.5,
+      "model_name": "random_forest"
+    }
+  }
+}

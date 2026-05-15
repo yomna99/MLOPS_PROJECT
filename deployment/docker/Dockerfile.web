@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r /tmp/requirements-web.txt
 
 COPY app /app/app
+COPY src /app/src
 
 EXPOSE 8501
 
