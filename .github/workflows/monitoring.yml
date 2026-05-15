@@ -28,7 +28,8 @@ jobs:
           FRAUD_REFERENCE_DATA_PATH: data/processed/ref_data_sample.csv
           FRAUD_MONITORING_OUTPUT_DIR: reports/evidently
         run: |
-          python scripts/generate_evidently_reports.py --reference data/processed/ref_data_sample.csv --production data/production/prod_data.csv --output reports/evidently --force > reports/evidently/summary.log
+          mkdir -p reports/evidently
+          python scripts/generate_evidently_reports.py --reference data/processed/ref_data_sample.csv --production data/processed/prod_data_sample.csv --output reports/evidently --force > reports/evidently/summary.log
 
       - name: Build GitHub step summary
         shell: python
